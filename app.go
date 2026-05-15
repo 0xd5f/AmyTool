@@ -11,10 +11,17 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"syscall"
 	"time"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
+
+func hideCmd(name string, args ...string) *exec.Cmd {
+	cmd := exec.Command(name, args...)
+	cmd.SysProcAttr = &syscall.SysProcAttr{CreationFlags: 0x08000000}
+	return cmd
+}
 
 type FolderItem struct {
 	Path        string `json:"path"`
@@ -518,7 +525,7 @@ func (a *App) CleanCacheTargets(paths []string) map[string]string {
 	results := make(map[string]string)
 	for _, p := range paths {
 		if p == `::recycle::` {
-			err := exec.Command("PowerShell", "-NoProfile", "-Command",
+			err := hideCmd("PowerShell", "-NoProfile", "-Command",
 				"Clear-RecycleBin -Force -ErrorAction SilentlyContinue").Run()
 			if err != nil {
 				results[p] = err.Error()
@@ -551,13 +558,13 @@ func (a *App) CleanCacheTargets(paths []string) map[string]string {
 // ─── Windows tweaks ───────────────────────────────────────────────────────────
 
 func restartExplorer() {
-	exec.Command("taskkill", "/F", "/IM", "explorer.exe").Run()
+	hideCmd("taskkill", "/F", "/IM", "explorer.exe").Run()
 	time.Sleep(1500 * time.Millisecond)
-	exec.Command("cmd", "/C", "start", "explorer.exe").Run()
+	hideCmd("cmd", "/C", "start", "explorer.exe").Run()
 }
 
 func getStuckRects3() ([]byte, error) {
-	out, err := exec.Command("reg", "query",
+	out, err := hideCmd("reg", "query",
 		`HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\StuckRects3`,
 		"/v", "Settings").Output()
 	if err != nil {
@@ -576,11 +583,11 @@ func getStuckRects3() ([]byte, error) {
 }
 
 func regKeyExists(key string) bool {
-	return exec.Command("reg", "query", key, "/ve").Run() == nil
+	return hideCmd("reg", "query", key, "/ve").Run() == nil
 }
 
 func regReadValue(key, value, vtype string) (string, error) {
-	out, err := exec.Command("reg", "query", key, "/v", value).Output()
+	out, err := hideCmd("reg", "query", key, "/v", value).Output()
 	if err != nil {
 		return "", err
 	}
@@ -667,9 +674,9 @@ func (a *App) ApplyTweak(id string, enabled bool) string {
 		if def.keyOnly {
 			var err error
 			if enabled {
-				err = exec.Command("reg", "add", def.key, "/ve", "/t", "REG_SZ", "/d", "", "/f").Run()
+				err = hideCmd("reg", "add", def.key, "/ve", "/t", "REG_SZ", "/d", "", "/f").Run()
 			} else {
-				err = exec.Command("reg", "delete", def.key, "/f").Run()
+				err = hideCmd("reg", "delete", def.key, "/f").Run()
 			}
 			if err != nil {
 				return err.Error()
@@ -683,7 +690,7 @@ func (a *App) ApplyTweak(id string, enabled bool) string {
 		if enabled {
 			val = def.enabledVal
 		}
-		err := exec.Command("reg", "add", def.key, "/v", def.valueName, "/t", def.vtype, "/d", val, "/f").Run()
+		err := hideCmd("reg", "add", def.key, "/v", def.valueName, "/t", def.vtype, "/d", val, "/f").Run()
 		if err != nil {
 			return err.Error()
 		}
@@ -712,13 +719,13 @@ func (a *App) ApplySelectTweak(id, value string) string {
 			}
 			data[12] = edge
 			hexStr := strings.ToUpper(hex.EncodeToString(data))
-			if err := exec.Command("reg", "add",
+			if err := hideCmd("reg", "add",
 				`HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\StuckRects3`,
 				"/v", "Settings", "/t", "REG_BINARY", "/d", hexStr, "/f").Run(); err != nil {
 				return err.Error()
 			}
 		default:
-			if err := exec.Command("reg", "add", def.key, "/v", def.valueName,
+			if err := hideCmd("reg", "add", def.key, "/v", def.valueName,
 				"/t", def.vtype, "/d", value, "/f").Run(); err != nil {
 				return err.Error()
 			}
