@@ -165,7 +165,7 @@ var tweakDefs = []tweakDef{
 		`HKCU\Software\Microsoft\Windows\CurrentVersion\Privacy`, "TailoredExperiencesWithDiagnosticDataEnabled", "0", "1", "REG_DWORD", false, false},
 	{"visual_effects_performance", "Визуальные эффекты: производительность", "Режим «Обеспечить наилучшее быстродействие» для визуальных эффектов", "Производительность",
 		`HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects`, "VisualFXSetting", "2", "0", "REG_DWORD", false, false},
-	{"disable_wallpaper_change", "Запретить смену обоив", "Не давать пользователю менять обои рабочего стола", "Персонализация",
+	{"disable_wallpaper_change", "Запретить смену обоев", "Не давать пользователю менять обои рабочего стола", "Персонализация",
 		`HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\ActiveDesktop`, "NoChangingWallPaper", "1", "0", "REG_DWORD", false, false},
 	{"disable_store_autoupdate", "Отключить автообновление аппов Microsoft Store", "Не обновлять приложения из Microsoft Store автоматически", "Приложения",
 		`HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager`, "AutoUpdateAppsEnabled", "0", "1", "REG_DWORD", false, false},
