@@ -3,7 +3,22 @@ export type Lang = 'ru' | 'en'
 interface TweakTr { name: string; desc: string; cat: string }
 
 interface L {
-  tabs: { projects: string; cache: string; tweaks: string; settings: string }
+  tabs: { dashboard: string; projects: string; cache: string; tweaks: string; settings: string; sorter: string }
+  dashboard: {
+    cpu: string
+    ram: string
+    disk: string
+    uptime: string
+    pcInfo: string
+    hostname: string
+    os: string
+    processor: string
+    gpu: string
+    ramLabel: string
+    bios: string
+    nic: string
+    loading: string
+  }
   titleBar: string
   cleaner: {
     scanLabel: string
@@ -74,13 +89,66 @@ interface L {
     cancel: string
     deleteBtn: string
   }
+  sorter: {
+    title: string
+    selectFolder: string
+    preview: string
+    sort: string
+    noFolder: string
+    noFiles: string
+    files: string
+    errTitle: string
+    done: string
+    selectAll: string
+    deselectAll: string
+    willMove: string
+    moved: string
+    others: string
+    copyMode: string
+    moveMode: string
+    recentFolders: string
+  }
   categories: Record<string, string>
   tweakTranslations: Record<string, TweakTr>
   tweakSelectOptions?: Record<string, Record<string, string>>
 }
 
 const ru: L = {
-  tabs: { projects: 'Проекты', cache: 'Кеш Windows', tweaks: 'Твики', settings: 'Настройки' },
+  tabs: { dashboard: 'Обзор', projects: 'Проекты', cache: 'Кеш Windows', tweaks: 'Твики', settings: 'Настройки', sorter: 'Сортировщик' },
+  dashboard: {
+    cpu: 'Процессор',
+    ram: 'Память',
+    disk: 'Диск',
+    uptime: 'Аптайм',
+    pcInfo: 'О системе',
+    hostname: 'Имя компьютера',
+    os: 'Операционная система',
+    processor: 'Процессор',
+    gpu: 'Видеокарта',
+    ramLabel: 'Оперативная память',
+    bios: 'BIOS',
+    nic: 'Сетевой адаптер',
+    loading: 'Загрузка...',
+  },
+  sorter: {
+    title: 'Сортировщик файлов',
+    selectFolder: 'Выбрать папку',
+    preview: 'Предпросмотр',
+    sort: 'Сортировать',
+    noFolder: 'Папка не выбрана',
+    noFiles: 'Нечего сортировать',
+    files: 'файлов',
+    errTitle: 'Ошибок',
+    done: 'Готово',
+    selectAll: 'Выбрать все',
+    deselectAll: 'Снять все',
+    willMove: 'Будет перемещено',
+    moved: 'Перемещено',
+    others: 'Не распознанные файлы',
+    copyMode: 'Копировать',
+    moveMode: 'Переместить',
+    recentFolders: 'Последние папки',
+  },
   titleBar: 'AmyTool',
   cleaner: {
     scanLabel: 'Папка для сканирования',
@@ -151,12 +219,124 @@ const ru: L = {
     cancel: 'Отмена',
     deleteBtn: 'Удалить',
   },
-  categories: {},
-  tweakTranslations: {},
+  categories: {
+    'Проводник': 'Проводник',
+    'Внешний вид': 'Внешний вид',
+    'Производительность': 'Производительность',
+    'Доступность': 'Доступность',
+    'Панель задач': 'Панель задач',
+    'Приватность': 'Приватность',
+    'Персонализация': 'Персонализация',
+    'Приложения': 'Приложения',
+    'Win11': 'Win11',
+    'Браузеры': 'Браузеры',
+  },
+  tweakTranslations: {
+    show_extensions:               { cat: 'Проводник',        name: 'Показывать расширения файлов',                    desc: 'Отображать .exe, .txt и пр. в Проводнике' },
+    show_hidden:                   { cat: 'Проводник',        name: 'Показывать скрытые файлы',                         desc: 'Отображать скрытые и системные файлы' },
+    dark_apps:                     { cat: 'Внешний вид',      name: 'Тёмный режим приложений',                         desc: 'Использовать тёмную тему для приложений Windows' },
+    dark_system:                   { cat: 'Внешний вид',      name: 'Тёмный режим системы',                            desc: 'Тёмная тема для системных элементов (меню, панель задач)' },
+    disable_animations:            { cat: 'Производительность', name: 'Отключить анимации окон',                       desc: 'Убрать плавные переходы и анимации для скорости' },
+    disable_sticky_keys:           { cat: 'Доступность',      name: 'Отключить залипание клавиш',                      desc: 'Убрать диалог при нажатии Shift 5 раз подряд' },
+    hide_cortana:                  { cat: 'Панель задач',     name: 'Скрыть кнопку Cortana',                           desc: 'Убрать кнопку Cortana с панели задач' },
+    hide_taskview:                 { cat: 'Панель задач',     name: 'Скрыть «Просмотр задач»',                         desc: 'Убрать кнопку Timeline / Task View с панели задач' },
+    hide_searchbox:                { cat: 'Панель задач',     name: 'Скрыть строку поиска',                            desc: 'Убрать поисковую строку с панели задач' },
+    disable_bing:                  { cat: 'Приватность',      name: 'Отключить Bing в меню «Пуск»',                    desc: 'Не отправлять поиск Start-меню в Bing/интернет' },
+    disable_tips:                  { cat: 'Приватность',      name: 'Отключить советы Windows',                        desc: 'Не показывать рекламные подсказки и предложения' },
+    disable_feedback:              { cat: 'Приватность',      name: 'Отключить запросы отзывов',                       desc: 'Не показывать диалоги с просьбой оценить Windows' },
+    disable_ads_explorer:          { cat: 'Проводник',        name: 'Скрыть рекламу в Проводнике',                     desc: 'Убрать уведомления облачных провайдеров в Проводнике' },
+    disable_snap_assist:           { cat: 'Проводник',        name: 'Отключить Snap Assist',                           desc: 'Не показывать варианты при прикреплении окна' },
+    disable_aero_shake:            { cat: 'Проводник',        name: 'Отключить Aero Shake',                            desc: 'Запретить сворачивать окна встряской мыши' },
+    disable_balloon_tips:          { cat: 'Проводник',        name: 'Отключить всплывающие подсказки',                 desc: 'Скрыть balloon-уведомления в системном трее' },
+    numlock_startup:               { cat: 'Доступность',      name: 'NumLock при входе',                               desc: 'Автоматически включать NumLock при входе в систему' },
+    disable_game_dvr:              { cat: 'Производительность', name: 'Отключить Game DVR',                            desc: 'Запретить фоновую запись игрового процесса Xbox' },
+    disable_xbox_gamebar:          { cat: 'Производительность', name: 'Отключить Xbox Game Bar',                       desc: 'Убрать наложение Xbox Game Bar (Win+G)' },
+    disable_error_reporting:       { cat: 'Приватность',      name: 'Отключить отчёты об ошибках',                     desc: 'Не отправлять дампы и отчёты об ошибках в Microsoft' },
+    disable_lock_screen_ads:       { cat: 'Приватность',      name: 'Отключить рекламу на экране блокировки',          desc: 'Убрать подсказки и рекомендации на lock screen' },
+    disable_startup_suggestions:   { cat: 'Приватность',      name: 'Отключить рекламу в «Пуске»',                    desc: 'Убрать предлагаемые приложения из меню Пуск' },
+    disable_news_taskbar:          { cat: 'Панель задач',     name: 'Скрыть «Новости и интересы»',                     desc: 'Убрать кнопку виджетов/новостей с панели задач' },
+    hide_people_bar:               { cat: 'Панель задач',     name: 'Скрыть кнопку «Люди»',                            desc: 'Убрать кнопку People с панели задач (Windows 10)' },
+    disable_transparency:          { cat: 'Внешний вид',      name: 'Отключить прозрачность',                          desc: 'Убрать эффекты прозрачности интерфейса Windows' },
+    disable_lockscreen_spotlight:  { cat: 'Внешний вид',      name: 'Отключить Spotlight на блокировке',               desc: 'Убрать рекламные изображения на экране блокировки' },
+    disable_tablet_mode:           { cat: 'Внешний вид',      name: 'Отключить планшетный режим',                      desc: 'Запретить Windows автоматически включать планшетный режим' },
+    show_full_path:                { cat: 'Проводник',        name: 'Полный путь в заголовке Проводника',              desc: 'Отображать полный путь к папке в строке заголовка' },
+    disable_autoplay:              { cat: 'Проводник',        name: 'Отключить автозапуск',                            desc: 'Не открывать диски/флешки автоматически при подключении' },
+    disable_activity_history:      { cat: 'Приватность',      name: 'Отключить журнал активности',                     desc: 'Не отслеживать открытые файлы и приложения' },
+    disable_tailored_experience:   { cat: 'Приватность',      name: 'Отключить персонализированную рекламу',           desc: 'Не использовать диагностику для показа рекламы' },
+    visual_effects_performance:    { cat: 'Производительность', name: 'Визуальные эффекты: производительность',        desc: 'Режим «Наилучшее быстродействие» для визуальных эффектов' },
+    disable_wallpaper_change:      { cat: 'Персонализация',   name: 'Запретить смену обоев',                           desc: 'Не давать пользователю менять обои рабочего стола' },
+    disable_store_autoupdate:      { cat: 'Приложения',       name: 'Отключить автообновление из Store',               desc: 'Не обновлять приложения из Microsoft Store автоматически' },
+    disable_cortana_search:        { cat: 'Приложения',       name: 'Отключить Cortana в поиске',                      desc: 'Запретить поиску через Cortana (HKCU, без администратора)' },
+    win11_old_context_menu:        { cat: 'Win11',            name: 'Старое контекстное меню (Win11)',                  desc: 'Восстановить полное контекстное меню с правым кликом' },
+    win11_old_explorer:            { cat: 'Win11',            name: 'Лента Проводника (Win11)',                         desc: 'Вернуть классическую ленту в Проводнике Windows 11' },
+    win11_taskbar_left:            { cat: 'Win11',            name: 'Выровнять панель задач по левому краю',           desc: 'Переместить кнопку Пуск и иконки к левому краю' },
+    edge_disable_sync:             { cat: 'Браузеры',         name: 'Отключить синхронизацию Edge',                    desc: 'Запретить Microsoft Edge синхронизировать данные' },
+    edge_disable_telemetry:        { cat: 'Браузеры',         name: 'Отключить телеметрию Edge',                       desc: 'Запретить Edge отправлять статистику в Microsoft' },
+    edge_disable_first_run:        { cat: 'Браузеры',         name: 'Отключить экран приветствия Edge',                desc: 'Не показывать «первый запуск» и предложение войти' },
+    chrome_disable_sync:           { cat: 'Браузеры',         name: 'Отключить синхронизацию Chrome',                  desc: 'Запретить Google Chrome синхронизировать данные' },
+    chrome_disable_metrics:        { cat: 'Браузеры',         name: 'Отключить телеметрию Chrome',                     desc: 'Запретить Chrome отправлять статистику в Google' },
+    disable_input_switch_icon:     { cat: 'Панель задач',     name: 'Скрыть значок раскладки клавиатуры',              desc: 'Убрать индикатор языка/раскладки из системного трея' },
+    disable_search_highlights:     { cat: 'Приватность',      name: 'Отключить подсветку в поиске',                    desc: 'Убрать динамические иконки и события в поиске' },
+    disable_suggested_apps_lockscreen: { cat: 'Приватность',  name: 'Отключить рекомендации на блокировке',            desc: 'Убрать предложения приложений на экране блокировки' },
+    disable_cross_device_paste:    { cat: 'Приватность',      name: 'Отключить буфер обмена между устройствами',       desc: 'Не синхронизировать буфер обмена через облако Microsoft' },
+    explorer_open_this_pc:         { cat: 'Проводник',        name: 'Открывать Проводник на «Этот компьютер»',         desc: 'По умолчанию Проводник открывается на «Быстрый доступ»' },
+    hide_meet_now:                 { cat: 'Панель задач',     name: 'Скрыть кнопку «Встреча сейчас»',                  desc: 'Убрать иконку Meet Now из системного трея' },
+    fast_context_menu:             { cat: 'Проводник',        name: 'Быстрое открытие контекстного меню',              desc: 'Уменьшить задержку перед появлением меню с 400 до 1 мс' },
+    disable_silent_app_install:    { cat: 'Приватность',      name: 'Отключить тихую установку рекламных приложений',  desc: 'Запретить Windows тихо устанавливать рекламные приложения' },
+    disable_app_suggestions_start: { cat: 'Приватность',      name: 'Отключить предложения приложений в «Пуске»',      desc: 'Убрать рекомендуемые приложения из Store в меню Пуск' },
+    end_task_taskbar:              { cat: 'Панель задач',     name: 'Кнопка «Завершить задачу» в панели задач',        desc: 'Добавить пункт «Завершить задачу» в контекстное меню панели задач' },
+    show_battery_percentage:       { cat: 'Панель задач',     name: 'Показывать процент заряда батареи',               desc: 'Отображать процент заряда прямо на значке батареи в трее' },
+    disable_advertising_id:        { cat: 'Приватность',      name: 'Отключить рекламный идентификатор',               desc: 'Запретить приложениям использовать персонализированный рекламный ID' },
+    disable_speech_privacy:        { cat: 'Приватность',      name: 'Отключить сбор голосовых данных',                 desc: 'Не отправлять образцы голоса в Microsoft для распознавания речи' },
+    disable_ink_collection:        { cat: 'Приватность',      name: 'Отключить сбор рукописного ввода',                desc: 'Не отправлять образцы рукописного текста и контактов в Microsoft' },
+    disable_bg_apps:               { cat: 'Производительность', name: 'Отключить фоновые приложения',                  desc: 'Запретить приложениям работать в фоне (глобально)' },
+    disable_storage_sense:         { cat: 'Производительность', name: 'Отключить контроль памяти (Storage Sense)',      desc: 'Отключить автоматическую очистку файлов через Storage Sense' },
+    disable_fso:                   { cat: 'Производительность', name: 'Отключить Full Screen Optimization',             desc: 'Отключить FSO для стабильности в полноэкранных играх' },
+    scrollbars_always_visible:     { cat: 'Внешний вид',      name: 'Всегда показывать полосы прокрутки',              desc: 'Не скрывать полосы прокрутки в приложениях автоматически' },
+    disable_mouse_accel:           { cat: 'Производительность', name: 'Отключить ускорение мыши',                      desc: 'Убрать «Повышение точности» указателя (акселерацию)' },
+    disable_toast_notifications:   { cat: 'Приватность',      name: 'Отключить всплывающие уведомления',               desc: 'Запретить показ toast-уведомлений от приложений' },
+    disable_siuf_feedback:         { cat: 'Приватность',      name: 'Отключить опросы обратной связи (SIUF)',           desc: 'Не показывать системные опросы о работе Windows' },
+    win11_taskbar_size:            { cat: 'Win11',            name: 'Размер панели задач (Win11)',                      desc: 'Изменить высоту панели задач Windows 11: маленькая / средняя / большая' },
+    win11_taskbar_layout:          { cat: 'Win11',            name: 'Положение панели задач (Win11)',                   desc: 'Переместить панель задач вверх или вниз экрана' },
+  },
 }
 
 const en: L = {
-  tabs: { projects: 'Projects', cache: 'Windows Cache', tweaks: 'Tweaks', settings: 'Settings' },
+  tabs: { dashboard: 'Overview', projects: 'Projects', cache: 'Windows Cache', tweaks: 'Tweaks', settings: 'Settings', sorter: 'Sorter' },
+  dashboard: {
+    cpu: 'CPU',
+    ram: 'Memory',
+    disk: 'Disk',
+    uptime: 'Uptime',
+    pcInfo: 'System Info',
+    hostname: 'Computer Name',
+    os: 'Operating System',
+    processor: 'Processor',
+    gpu: 'GPU',
+    ramLabel: 'RAM',
+    bios: 'BIOS',
+    nic: 'Network Adapter',
+    loading: 'Loading...',
+  },
+  sorter: {
+    title: 'File Sorter',
+    selectFolder: 'Select Folder',
+    preview: 'Preview',
+    sort: 'Sort Files',
+    noFolder: 'No folder selected',
+    noFiles: 'Nothing to sort',
+    files: 'files',
+    errTitle: 'Errors',
+    done: 'Done',
+    selectAll: 'Select All',
+    deselectAll: 'Deselect All',
+    willMove: 'Will be moved',
+    moved: 'Moved',
+    others: 'Unrecognized files',
+    copyMode: 'Copy',
+    moveMode: 'Move',
+    recentFolders: 'Recent folders',
+  },
   titleBar: 'AmyTool',
   cleaner: {
     scanLabel: 'Folder to scan',
@@ -292,6 +472,18 @@ const en: L = {
     fast_context_menu:          { cat: 'Explorer',        name: 'Fast context menu',                  desc: 'Reduce context menu delay from 400ms to 1ms' },
     disable_silent_app_install: { cat: 'Privacy',         name: 'Disable silent app installs',        desc: 'Prevent Windows from silently installing promotional Store apps' },
     disable_app_suggestions_start: { cat: 'Privacy',      name: 'Disable Start Menu app suggestions', desc: 'Remove recommended app suggestions from Store in Start Menu' },
+    end_task_taskbar:              { cat: 'Taskbar',         name: 'End Task in taskbar context menu',       desc: 'Add an End Task option to the taskbar right-click menu' },
+    show_battery_percentage:       { cat: 'Taskbar',         name: 'Show battery percentage',                desc: 'Display battery percentage on the battery tray icon' },
+    disable_advertising_id:        { cat: 'Privacy',         name: 'Disable advertising ID',                 desc: 'Prevent apps from using your personalized advertising ID' },
+    disable_speech_privacy:        { cat: 'Privacy',         name: 'Disable speech data collection',         desc: "Don't send voice samples to Microsoft for speech recognition" },
+    disable_ink_collection:        { cat: 'Privacy',         name: 'Disable ink and typing collection',      desc: "Don't send handwriting samples and contacts to Microsoft" },
+    disable_bg_apps:               { cat: 'Performance',     name: 'Disable background apps',                desc: 'Prevent apps from running in the background (globally)' },
+    disable_storage_sense:         { cat: 'Performance',     name: 'Disable Storage Sense',                  desc: 'Disable automatic file cleanup through Storage Sense' },
+    disable_fso:                   { cat: 'Performance',     name: 'Disable Full Screen Optimization',       desc: 'Disable FSO for better stability in fullscreen games' },
+    scrollbars_always_visible:     { cat: 'Appearance',      name: 'Always show scrollbars',                 desc: "Don't automatically hide scrollbars in apps" },
+    disable_mouse_accel:           { cat: 'Performance',     name: 'Disable mouse acceleration',             desc: "Remove 'Enhance pointer precision' (pointer acceleration)" },
+    disable_toast_notifications:   { cat: 'Privacy',         name: 'Disable toast notifications',            desc: 'Prevent apps from showing toast (pop-up) notifications' },
+    disable_siuf_feedback:         { cat: 'Privacy',         name: 'Disable SIUF feedback surveys',          desc: "Don't show system feedback surveys about Windows" },
     win11_taskbar_size:         { cat: 'Win11',           name: 'Taskbar size (Win11)',                 desc: 'Change Windows 11 taskbar height: small / medium / large' },
     win11_taskbar_layout:       { cat: 'Win11',           name: 'Taskbar position (Win11)',             desc: 'Move taskbar to top or bottom of the screen' },
   },

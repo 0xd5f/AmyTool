@@ -1,12 +1,21 @@
 # AmyTool
 
-Windows desktop utility for cleaning developer caches and applying system tweaks.
+> **v0.1.1**
+
+Windows desktop utility for cleaning developer caches, sorting files, and applying system tweaks.
 
 Built with [Wails v2](https://wails.io) (Go backend) + [React](https://react.dev) + [Mantine](https://mantine.dev) frontend.
 
 ---
 
 ## Features
+
+### Dashboard
+Real-time system overview on launch:
+
+- CPU model, RAM (used / total), disk usage per drive
+- OS version, motherboard, BIOS info
+- All data collected via PowerShell CIM — no WMI/wmic dependency
 
 ### Projects — Developer Cache Cleaner
 Scans a directory tree and finds build artifacts / dependency folders:
@@ -32,6 +41,25 @@ Bulk-clean system temp folders with one click:
 - Explorer thumbnail cache
 - **Recycle Bin** (emptied via `Clear-RecycleBin`)
 
+### Sorter — File Organiser
+Sort a folder's files into subfolders by type in one click:
+
+| Category | Extensions |
+|----------|-----------|
+| Archives | zip, rar, 7z, tar, gz, … |
+| Music | mp3, flac, wav, ogg, … |
+| Video | mp4, mkv, avi, mov, … |
+| Photos | jpg, jpeg, png, gif, … |
+| Images | svg, ico, webp, psd, ai, … |
+| Docs | pdf, doc, docx, xls, xlsx, … |
+| Apps | exe, msi, appx, … |
+| Others | everything else |
+
+- Preview before sorting: file count + total size per category
+- Select / deselect categories with checkboxes
+- **Copy** or **Move** mode
+- Folder history (last 5 used paths)
+
 ### Tweaks — Registry Optimizer
 HKCU registry tweaks, grouped by category. No reboot required for most.
 
@@ -42,7 +70,7 @@ HKCU registry tweaks, grouped by category. No reboot required for most.
 | Показывать скрытые файлы | Отображать скрытые и системные файлы |
 | Открывать Проводник на «Этот компьютер» | По умолчанию вместо «Быстрый доступ» |
 | Полный путь в заголовке Проводника | Показывать полный путь в строке заголовка |
-| Быстрое открытие контекстного меню | Задержка 1 мс вместо 400 мс |
+| Быстрое открытие контекстного меню | Задержка 0 мс вместо 400 мс |
 | Отключить Snap Assist | Не показывать варианты при прикреплении окна |
 | Отключить Aero Shake | Запретить сворачивать окна встряской мыши |
 | Отключить автозапуск | Не открывать диски/флешки автоматически |
@@ -170,3 +198,18 @@ The binary is output to `build/bin/AmyTool.exe`.
 - Settings are persisted to `%APPDATA%\AmyTool\settings.json`
 - Tweaks that require Explorer restart do so automatically in the background
 - The app window is frameless; drag the title bar to move it
+
+---
+
+## Changelog
+
+### v0.1.1
+- Added **Sorter** tab — sort files into subfolders by type (copy or move, preview with sizes, folder history)
+- Dashboard now uses PowerShell CIM instead of deprecated `wmic`
+- Fixed `disable_animations` tweak: also disables taskbar animations (`TaskbarAnimations`)
+- Fixed `win11_old_context_menu` / `win11_old_explorer` disable: now correctly deletes the parent CLSID key
+- Fixed `disable_xbox_gamebar`: removed unnecessary Explorer restart
+- Fixed `fast_context_menu`: delay now 0 ms (was 1 ms)
+
+### v0.1.0
+- Initial release
